@@ -8,7 +8,7 @@ def show_hide():
 
     if text_frame.winfo_viewable():
         text_frame.pack_forget()
-        add_btn_var.set("ADD TASK")
+        add_btn_var.set("ADD NOTES")
     else:
         text_frame.pack()
         add_btn_var.set("BACK")
@@ -16,7 +16,7 @@ def show_hide():
 
 def cancel_btn():
     text_frame.pack_forget()
-    add_btn_var.set("ADD TASK")
+    add_btn_var.set("ADD NOTES")
     text_area.delete("1.0","end")
 
 def add_task():
@@ -26,6 +26,8 @@ def add_task():
     task.reverse()
     print(task)
     text_area.delete("1.0","end")
+    text_frame.pack_forget()
+    add_btn_var.set("ADD NOTES")
 
 
 task=[]
@@ -33,7 +35,7 @@ task=[]
 # window
 window=ttb.Window()
 window.geometry('500x800')
-window.title("To-Do List")
+window.title("PYWRITE")
 window.resizable(False, False)
 style=Style(theme="darkly")
 
@@ -46,13 +48,13 @@ header_frame=ttb.Frame(main_frame)
 header_frame.pack(fill='x', padx=10, pady=10)
 
 # header_title_label
-header_title_label=ttb.Label(header_frame, text="To-Do List", font="Calibre 14 bold")
+header_title_label=ttb.Label(header_frame, text="PYWRITE", font="Calibre 14 bold")
 header_title_label.pack(side="left")
 
 # add_btn
 add_btn_var=ttk.StringVar()
-add_btn_var.set("ADD TASK")
-add_btn=ttb.Button(header_frame, width=10, style="success", command=show_hide, textvariable=add_btn_var)
+add_btn_var.set("ADD NOTES")
+add_btn=ttb.Button(header_frame, width=13, style="success", command=show_hide, textvariable=add_btn_var)
 add_btn.pack(side="right")
 
 # header_separator
@@ -65,16 +67,16 @@ text_frame=ttb.Frame(main_frame)
 # text_frame.pack(fill='both')
 
 # text_frame_label
-text_frame_label=ttb.Label(text_frame, text="Add Task")
+text_frame_label=ttb.Label(text_frame, text="ADD NOTES")
 text_frame_label.pack()
 
 # text_area
 text_area=ttb.Text(text_frame)
-text_area.pack(ipadx=10, ipady=10)
+text_area.pack(ipadx=20, ipady=20)
 
 # text_area_control
 text_area_control=ttb.Frame(text_frame)
-text_area_control.pack(fill='both', expand=True)
+text_area_control.pack(fill='both', expand=True, padx=5, pady=5)
 text_area_control.columnconfigure((0, 1), weight=2)
 
 # save_btn
