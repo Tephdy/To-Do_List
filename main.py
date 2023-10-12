@@ -35,7 +35,7 @@ task=[]
 # window
 window=ttb.Window()
 window.geometry('500x800')
-window.title("PYWRITE")
+window.title("pyWRITE")
 window.resizable(False, False)
 style=Style(theme="darkly")
 
