@@ -13,6 +13,7 @@ def show_hide():
         text_frame.pack_forget()
         add_btn_var.set("ADD NOTES")
         task_main_frame.pack(fill="both", ipadx=10, ipady=10, padx=10, pady=10)
+
     else:
         search_bar.delete("0", "end")
         text_frame.pack(padx=15, pady=15)
@@ -20,6 +21,7 @@ def show_hide():
         text_area.delete("1.0", "end")
         task_main_frame.pack_forget()
         search_bar_frame.pack_forget()
+        task_scrollbar.pack(side="right",fill="y")
 
 def cancel_btn():
     search_bar_frame.pack(fill='x',
@@ -58,31 +60,32 @@ def display_task():
 
     task_text=text_area.get("1.0", "end-1c")
     task.append(task_text)
+    substring=task_text[0:20]
     # task.reverse()
-    print(task[-1])
+    # print(task[-1])
 
     if task_text:
-        task_frame=ttb.Frame(task_content)
-        task_frame.pack(fill='x', pady=10)
+        task_frame=ttb.Frame(task_content, height=20)
+        task_frame.pack(fill='x', pady=10, expand=True)
 
-        task_sub_label = ttb.Label(task_frame,text=formatted_date,style="secondary")
-        task_sub_label.pack(fill='x')
+        task_sub_label = ttb.Label(task_frame,text=formatted_date,style="warning")
+        task_sub_label.pack(fill='x', expand=True)
 
-        task_label=ttb.Label(task_frame, text=task[-1])
-        task_label.pack(fill='x', pady=4)
+        task_label=ttb.Label(task_frame, text=substring)
+        task_label.pack(fill='x', pady=4, expand=True)
 
-        task_separator=ttb.Separator(task_frame, style="success")
-        task_separator.pack(fill='x', pady=10)
+        task_separator=ttb.Separator(task_frame, style="warning")
+        task_separator.pack(fill='x', pady=10, expand=True)
 
 
 task=[]
 
 # window
 window=ttb.Window()
-window.geometry('530x800')
+window.geometry('520x800')
 window.title("pyWRITE")
 window.resizable(False, False)
-style=Style(theme="vapor")
+style=Style(theme="cyborg")
 
 # main_frame
 main_frame=ttb.Frame(window)
@@ -99,7 +102,7 @@ header_title_label.pack(side="left")
 # add_btn
 add_btn_var=ttk.StringVar()
 add_btn_var.set("ADD NOTES")
-add_btn=ttb.Button(header_frame, width=13, style="success", command=show_hide, textvariable=add_btn_var)
+add_btn=ttb.Button(header_frame, width=13, style="warning", command=show_hide, textvariable=add_btn_var)
 add_btn.pack(side="right")
 
 # header_separator
@@ -121,11 +124,11 @@ text_area.pack()
 
 # text_area_control
 text_area_control=ttb.Frame(text_frame)
-text_area_control.pack(fill='both', expand=True, padx=5, pady=5)
+text_area_control.pack(fill='both', expand=True,pady=5)
 text_area_control.columnconfigure((0, 1), weight=2)
 
 # save_btn
-save_btn=ttb.Button(text_area_control, text="SAVE", style="success", command=add_task)
+save_btn=ttb.Button(text_area_control, text="SAVE", style="warning", command=add_task)
 save_btn.grid(row=0, column=0, sticky="ew")
 
 # cancel_btn
@@ -141,7 +144,7 @@ search_bar_frame=ttb.Frame(main_frame)
 search_bar_frame.pack(fill='x', padx=15, pady=15)
 
 # search_bar
-search_bar=ttb.Entry(search_bar_frame)
+search_bar=ttb.Entry(search_bar_frame, style="warning")
 search_bar.insert(0, "Search")
 search_bar.bind("<FocusIn>", lambda e: search_bar.delete('0', 'end'))
 search_bar.bind("<FocusOut>", lambda e: search_bar.insert(0, "Search"))
@@ -159,16 +162,16 @@ def on_mousewheel(event):
 
 
 # task_main_frame
-task_main_frame=ttb.Frame(main_frame)
+task_main_frame=ttb.Frame(main_frame, height=800)
 task_main_frame.pack(fill="both", padx=15)
 
 # task_canvas
-task_canvas=ttk.Canvas(task_main_frame, background="red")
+task_canvas=ttk.Canvas(task_main_frame, height=800)
 task_canvas.pack(side="left", fill="both")
 
 # task_scrollbar
-task_scrollbar=ttb.Scrollbar(task_main_frame, style="info", command=task_canvas.yview)
-task_scrollbar.pack(side="right", fill="y")
+task_scrollbar=ttb.Scrollbar(task_main_frame, style="dark", command=task_canvas.yview)
+# task_scrollbar.pack(side="right", fill="y")
 
 # Configure the canvas to work with the scrollbar
 task_canvas.config(yscrollcommand=task_scrollbar.set)
@@ -183,10 +186,11 @@ task_canvas.create_window((0,0), window=task_content, anchor="nw", width=500)
 # Bind a function to handle changes to the frame's size
 task_content.bind("<Configure>", on_configure)
 
+
 # Add content to the frame
-for i in range(50):
-    label = ttb.Button(task_content, text=f"Item {i}")
-    label.pack(fill='both')
+# for i in range(50):
+#     label = ttb.Button(task_content, text=f"Item {i}")
+#     label.pack(fill='both')
 
 
 # run
