@@ -2,6 +2,7 @@
 import tkinter as ttk
 import ttkbootstrap as ttb
 from ttkbootstrap import Style
+import datetime as user_date
 
 def show_hide():
     add_btn_var.get()
@@ -11,7 +12,7 @@ def show_hide():
         search_bar.insert(0, "Search")
         text_frame.pack_forget()
         add_btn_var.set("ADD NOTES")
-        task_main_frame.pack(fill="both", ipadx=10, ipady=10, padx=10, pady=10, expand=True)
+        task_main_frame.pack(fill="both", ipadx=10, ipady=10, padx=10, pady=10)
     else:
         search_bar.delete("0", "end")
         text_frame.pack(padx=15, pady=15)
@@ -32,38 +33,56 @@ def cancel_btn():
                          ipadx=10,
                          ipady=10,
                          padx=10,
-                         pady=10,
-                         expand=True)
+                         pady=10)
 
 def add_task():
     search_bar_frame.pack(fill='x',
                           padx=15,
                           pady=15)
     search_bar.insert(0,"Search")
-    task_value=text_area.get("1.0", "end-1c")
-    # print(task_value)
-    task.append(task_value)
-    task.reverse()
+    display_task()
     print(task)
     text_area.delete("1.0","end")
     text_frame.pack_forget()
     add_btn_var.set("ADD NOTES")
     task_main_frame.pack(fill="both",
-                         ipadx=10,
-                         ipady=10,
+                         ipadx=20,
+                         ipady=20,
                          padx=10,
-                         pady=10,
-                         expand=True)
+                         pady=10)
+
+def display_task():
+    current_datetime=user_date.datetime.now()
+    current_date=current_datetime.date()
+    formatted_date=current_date.strftime("%m-%d-%d")
+
+    task_text=text_area.get("1.0", "end-1c")
+    task.append(task_text)
+    # task.reverse()
+    print(task[-1])
+
+    if task_text:
+        task_frame=ttb.Frame(task_content)
+        task_frame.pack(fill='x', pady=10)
+
+        task_sub_label = ttb.Label(task_frame,text=formatted_date,style="secondary")
+        task_sub_label.pack(fill='x')
+
+        task_label=ttb.Label(task_frame, text=task[-1])
+        task_label.pack(fill='x', pady=4)
+
+        task_separator=ttb.Separator(task_frame, style="success")
+        task_separator.pack(fill='x', pady=10)
 
 
 task=[]
 
 # window
 window=ttb.Window()
-window.geometry('500x800')
+window.geometry('530x800')
 window.title("pyWRITE")
 window.resizable(False, False)
-style=Style(theme="minty")
+style=Style(theme="vapor")
 
 # main_frame
 main_frame=ttb.Frame(window)
@@ -128,32 +147,46 @@ search_bar.bind("<FocusIn>", lambda e: search_bar.delete('0', 'end'))
 search_bar.bind("<FocusOut>", lambda e: search_bar.insert(0, "Search"))
 search_bar.pack(fill='x')
 
+def on_configure(event):
+    task_canvas.config(scrollregion=task_canvas.bbox("all"))
+
+def on_mousewheel(event):
+    # Determine the direction of the scroll
+    if event.delta > 0:
+        task_canvas.yview_scroll(-1, "units")
+    elif event.delta < 0:
+        task_canvas.yview_scroll(1, "units")
+
 
 # task_main_frame
-task_main_frame=ttb.Frame(main_frame, height=10)
-task_main_frame.pack(fill="x", padx=15)
+task_main_frame=ttb.Frame(main_frame)
+task_main_frame.pack(fill="both", padx=15)
 
-# task_content_frame
-task_content_frame=ttb.Frame(task_main_frame)
-task_content_frame.pack(fill='x', padx=10, pady=10)
+# task_canvas
+task_canvas=ttk.Canvas(task_main_frame, background="red")
+task_canvas.pack(side="left", fill="both")
 
-# task_label
-task_label=ttb.Label(task_content_frame, text="Note 1", font="Calibre, 12 bold")
-task_label.pack(fill='x', pady=4)
+# task_scrollbar
+task_scrollbar=ttb.Scrollbar(task_main_frame, style="info", command=task_canvas.yview)
+task_scrollbar.pack(side="right", fill="y")
 
-# task_sub_label
-task_sub_label=ttb.Label(task_content_frame, text="11, October", font="Calibre 9", style="secondary")
-task_sub_label.pack(fill='x', pady=4)
+# Configure the canvas to work with the scrollbar
+task_canvas.config(yscrollcommand=task_scrollbar.set)
+
+# Bind the mouse scroll event to the canvas
+task_canvas.bind("<MouseWheel>", on_mousewheel)
 
 # task_content
-task_content=ttb.Label(task_content_frame,
-                       text="Hello World",
-                       font="Calibre 10")
-task_content.pack(fill='x', pady=4)
+task_content=ttb.Frame(task_canvas)
+task_canvas.create_window((0,0), window=task_content, anchor="nw", width=500)
 
-# task_separator
-task_separator=ttb.Separator(task_content_frame, style="success")
-task_separator.pack(fill='x', pady=20)
+# Bind a function to handle changes to the frame's size
+task_content.bind("<Configure>", on_configure)
+
+# Add content to the frame
+for i in range(50):
+    label = ttb.Button(task_content, text=f"Item {i}")
+    label.pack(fill='both')
 
 
 # run
