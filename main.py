@@ -8,10 +8,12 @@ def show_hide():
 
     if text_frame.winfo_viewable():
         search_bar_frame.pack(fill='x', padx=15, pady=15)
+        search_bar.insert(0, "Search")
         text_frame.pack_forget()
         add_btn_var.set("ADD NOTES")
         task_main_frame.pack(fill="both", ipadx=10, ipady=10, padx=10, pady=10, expand=True)
     else:
+        search_bar.delete("0", "end")
         text_frame.pack(padx=15, pady=15)
         add_btn_var.set("BACK")
         text_area.delete("1.0", "end")
@@ -22,6 +24,7 @@ def cancel_btn():
     search_bar_frame.pack(fill='x',
                           padx=15,
                           pady=15)
+    search_bar.insert(0,"Search")
     text_frame.pack_forget()
     add_btn_var.set("ADD NOTES")
     text_area.delete("1.0","end")
@@ -36,6 +39,7 @@ def add_task():
     search_bar_frame.pack(fill='x',
                           padx=15,
                           pady=15)
+    search_bar.insert(0,"Search")
     task_value=text_area.get("1.0", "end-1c")
     # print(task_value)
     task.append(task_value)
@@ -121,6 +125,7 @@ search_bar_frame.pack(fill='x', padx=15, pady=15)
 search_bar=ttb.Entry(search_bar_frame)
 search_bar.insert(0, "Search")
 search_bar.bind("<FocusIn>", lambda e: search_bar.delete('0', 'end'))
+search_bar.bind("<FocusOut>", lambda e: search_bar.insert(0, "Search"))
 search_bar.pack(fill='x')
 
 
