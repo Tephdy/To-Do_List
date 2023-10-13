@@ -22,6 +22,7 @@ def show_hide():
         task_main_frame.pack_forget()
         search_bar_frame.pack_forget()
         task_scrollbar.pack(side="right",fill="y")
+        text_area_title.delete("0", "end")
 
 def cancel_btn():
     search_bar_frame.pack(fill='x',
@@ -36,6 +37,8 @@ def cancel_btn():
                          ipady=10,
                          padx=10,
                          pady=10)
+    text_area_title.delete("0",
+                           "end")
 
 def add_task():
     search_bar_frame.pack(fill='x',
@@ -52,12 +55,15 @@ def add_task():
                          ipady=20,
                          padx=10,
                          pady=10)
+    text_area_title.delete("0",
+                           "end")
 
 def display_task():
     current_datetime=user_date.datetime.now()
     current_date=current_datetime.date()
     formatted_date=current_date.strftime("%m-%d-%d")
 
+    text_frame_title=text_area_title.get()
     task_text=text_area.get("1.0", "end-1c")
     task.append(task_text)
     substring=task_text[0:20]
@@ -67,6 +73,9 @@ def display_task():
     if task_text:
         task_frame=ttb.Frame(task_content, height=20)
         task_frame.pack(fill='x', pady=10, expand=True)
+
+        task_title=ttb.Label(task_frame, text=text_frame_title, font="Calibre, 14 bold")
+        task_title.pack(fill='x', expand=True)
 
         task_sub_label = ttb.Label(task_frame,text=formatted_date,style="warning")
         task_sub_label.pack(fill='x', expand=True)
@@ -101,7 +110,7 @@ header_title_label.pack(side="left")
 
 # add_btn
 add_btn_var=ttk.StringVar()
-add_btn_var.set("ADD NOTES")
+add_btn_var.set("ADD NOTE")
 add_btn=ttb.Button(header_frame, width=13, style="warning", command=show_hide, textvariable=add_btn_var)
 add_btn.pack(side="right")
 
@@ -115,8 +124,14 @@ text_frame=ttb.Frame(main_frame)
 # text_frame.pack(fill='both') function will pack this
 
 # text_frame_label
-text_frame_label=ttb.Label(text_frame, text="ADD NOTES")
+text_frame_label=ttb.Label(text_frame, text="ADD NOTE")
 text_frame_label.pack()
+
+# text_area_title
+text_area_title=ttb.Entry(text_frame)
+text_area_title.insert(0, "Title")
+text_area_title.bind("<FocusIn>", lambda e:text_area_title.delete("0", "end"))
+text_area_title.pack(fil='x', pady=10)
 
 # text_area
 text_area=ttb.Text(text_frame, wrap="word")
