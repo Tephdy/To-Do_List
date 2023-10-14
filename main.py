@@ -3,6 +3,7 @@ import tkinter as ttk
 import ttkbootstrap as ttb
 from ttkbootstrap import Style
 import datetime as user_date
+import json
 
 def show_hide():
     add_btn_var.get()
@@ -13,6 +14,7 @@ def show_hide():
         text_frame.pack_forget()
         add_btn_var.set("ADD NOTES")
         task_main_frame.pack(fill="both", ipadx=10, ipady=10, padx=10, pady=10)
+        # text_area_title.delete("0","end")
 
     else:
         search_bar.delete("0", "end")
@@ -22,7 +24,6 @@ def show_hide():
         task_main_frame.pack_forget()
         search_bar_frame.pack_forget()
         task_scrollbar.pack(side="right",fill="y")
-        text_area_title.delete("0", "end")
 
 def cancel_btn():
     search_bar_frame.pack(fill='x',
@@ -37,8 +38,8 @@ def cancel_btn():
                          ipady=10,
                          padx=10,
                          pady=10)
-    text_area_title.delete("0",
-                           "end")
+    text_area_title.delete("0","end")
+    text_area_title.insert(0,"Title")
 
 def add_task():
     search_bar_frame.pack(fill='x',
@@ -46,48 +47,72 @@ def add_task():
                           pady=15)
     search_bar.insert(0,"Search")
     display_task()
-    print(task)
+    # print(task)
     text_area.delete("1.0","end")
     text_frame.pack_forget()
-    add_btn_var.set("ADD NOTES")
+    add_btn_var.set("ADD NOTE")
     task_main_frame.pack(fill="both",
                          ipadx=20,
                          ipady=20,
                          padx=10,
                          pady=10)
-    text_area_title.delete("0",
-                           "end")
+    # text_area_title.insert(0, "Title")
+    text_area_title.delete("0","end")
+    text_area_title.insert(0,
+                           "Title")
 
 def display_task():
-    current_datetime=user_date.datetime.now()
-    current_date=current_datetime.date()
-    formatted_date=current_date.strftime("%m-%d-%d")
+    current_datetime = user_date.datetime.now()
+    current_date = current_datetime.date()
 
-    text_frame_title=text_area_title.get()
-    task_text=text_area.get("1.0", "end-1c")
-    task.append(task_text)
-    substring=task_text[0:20]
-    # task.reverse()
-    # print(task[-1])
+    text_frame_title = text_area_title.get()
+    task_text = text_area.get("1.0",
+                              "end-1c")
 
     if task_text:
-        task_frame=ttb.Frame(task_content, height=20)
-        task_frame.pack(fill='x', pady=10, expand=True)
+        title = text_area.get("1.0",
+                              "end-1c")
+        date = str(current_date)
+        content = text_area.get("1.0",
+                                "end-1c")
+        substring = content[0:20]
 
-        task_title=ttb.Label(task_frame, text=text_frame_title, font="Calibre, 14 bold")
-        task_title.pack(fill='x', expand=True)
+        task = {"title": title,
+                "date": date,
+                "content": content}
 
-        task_sub_label = ttb.Label(task_frame,text=formatted_date,style="warning")
-        task_sub_label.pack(fill='x', expand=True)
+        # Specify the file path where you want to save the JSON data
+        file_path = "data.json"
 
-        task_label=ttb.Label(task_frame, text=substring)
-        task_label.pack(fill='x', pady=4, expand=True)
+        # Write the dictionary to the JSON file
+        with open(file_path,'w') as file:
+            json.dump(task,file)
 
-        task_separator=ttb.Separator(task_frame, style="warning")
-        task_separator.pack(fill='x', pady=10, expand=True)
+        task_frame = ttb.Frame(task_content,height=20)
+        task_frame.pack(fill='x',
+                        pady=10,
+                        expand=True)
 
+        task_title = ttb.Label(task_frame,
+                               text=title,
+                               font="Calibre, 14 bold")
+        task_title.pack(fill='x',expand=True)
 
-task=[]
+        task_sub_label = ttb.Label(task_frame,
+                                   text=current_date,
+                                   style="warning")
+        task_sub_label.pack(fill='x',expand=True)
+
+        task_label = ttb.Label(task_frame,text=substring)
+        task_label.pack(fill='x',
+                        pady=4,
+                        expand=True)
+
+        task_separator = ttb.Separator(task_frame,style="warning")
+        task_separator.pack(fill='x',
+                            pady=10,
+                            expand=True)
+
 
 # window
 window=ttb.Window()
@@ -129,8 +154,8 @@ text_frame_label.pack()
 
 # text_area_title
 text_area_title=ttb.Entry(text_frame)
-text_area_title.insert(0, "Title")
 text_area_title.bind("<FocusIn>", lambda e:text_area_title.delete("0", "end"))
+text_area_title.insert(0,"Title")
 text_area_title.pack(fil='x', pady=10)
 
 # text_area
